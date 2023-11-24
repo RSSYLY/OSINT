@@ -95,4 +95,11 @@
 }
 .vertical_line {
 }
+._图片1 {
+  font-family:"Arial Normal", "Arial", sans-serif;
+  font-weight:normal;
+  font-style:normal;
+  font-size:10px;
+  color:#000000;
+}
 textarea, select, input, button { outline: none; }
