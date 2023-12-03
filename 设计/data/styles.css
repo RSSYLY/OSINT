@@ -102,4 +102,29 @@
   font-size:10px;
   color:#000000;
 }
+.box_1 {
+}
+.label {
+  font-size:14px;
+  text-align:left;
+}
+.ellipse {
+}
+.table_cell {
+}
+.line {
+}
+.droplist {
+  color:#000000;
+  text-align:left;
+}
+.form_disabled {
+}
+.box_3 {
+}
+.primary_button {
+  color:#FFFFFF;
+}
+._连接 {
+}
 textarea, select, input, button { outline: none; }
