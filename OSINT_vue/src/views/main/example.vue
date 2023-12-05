@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  $END$
+登录后的例子
 </template>
 
 <style scoped>
