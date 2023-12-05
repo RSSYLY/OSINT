@@ -128,14 +128,14 @@ export default {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    width: 60%;
+    width: 70%;
   }
   .container-right{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 40%;
+    width: 30%;
   }
   .card{
     display: flex;
