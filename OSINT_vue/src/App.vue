@@ -25,7 +25,9 @@ export default {
   <mdui-layout>
     <TopAppBar/>
     <mdui-layout-main style="min-height: 300px">
-      <main class="layout-main"><RouterView/></main>
+      <main class="layout-main">
+        <RouterView/>
+      </main>
     </mdui-layout-main>
   </mdui-layout>
 </template>

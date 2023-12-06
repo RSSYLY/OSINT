@@ -1,5 +1,4 @@
 <script>
-import {computed, inject} from 'vue'
 import { useMainStore } from '@/store/store.js'
 import {getTheme, setTheme} from "mdui";
 
@@ -22,6 +21,10 @@ export default {
     changeTheme(themeValue) {
       localStorage.setItem("theme", themeValue);
       setTheme(localStorage.getItem("theme"));
+    },
+    // 切换路由
+    routerTo(path) {
+      this.$router.push(path);
     }
   },
   data() {
@@ -33,9 +36,13 @@ export default {
 </script>
 
 <template>
+<!-- 抽屉列表和导航栏都是通过store读取 -->
   <mdui-navigation-drawer class="main-navigation-drawer">
-    <mdui-list>
-      <mdui-list-item>Navigation drawer</mdui-list-item>
+    <mdui-list style="padding: 20px">
+      <div v-for="item in store.pageInfo.drawer.items" :key="item.title">
+        <mdui-list-subheader>{{item.title}}</mdui-list-subheader>
+        <mdui-list-item v-for="subItem in item.items" :key="subItem.title" :active="subItem.active" @click="routerTo(subItem.link)" rounded>{{subItem.title}}</mdui-list-item>
+      </div>
     </mdui-list>
   </mdui-navigation-drawer>
   <mdui-top-app-bar class="top-app-bar" scroll-behavior="elevate" scroll-target=".layout-main">

@@ -6,7 +6,7 @@ export default {
   setup() {
     // 更改导航栏标题
     const store = useMainStore();
-    store.pageInfo.title = "注册";
+    store.pageInfo.title = "找回密码";
     // 更改抽屉
     store.pageInfo.drawer={
       items:[
@@ -21,12 +21,12 @@ export default {
             {
               title:'注册',
               link:'/signup',
-              active:true
+              active:false
             },
             {
               title:'找回密码',
               link:'/findpass',
-              active:false
+              active:true
             }
           ]
         }
@@ -34,39 +34,16 @@ export default {
     }
   },
   methods: {
-    // 提交注册请求
-    submitSignupRequest() {
-      // 获取注册信息
-      const emailEle = document.querySelector('#signup-email');
-      const pwdEle = document.querySelector('#signup-pwd');
-      const pwdReEle = document.querySelector('#signup-pwd-re');
-      const phoneEle = document.querySelector('#signup-phone');
-      const agreeUserLicenseEle = document.querySelector('#checkbox-agree-user-license');
-      // 验证是否通过表单验证
-      if ( emailEle.reportValidity() && pwdEle.reportValidity() && pwdReEle.reportValidity() && agreeUserLicenseEle.checked){
-        const signupInfo = {
-          email: emailEle.value,
-          password: pwdEle.value,
-          passwordRe: pwdReEle.value,
-          phone: phoneEle.value
-        }
-        // 发送注册请求
-        if(signupInfo.password === signupInfo.passwordRe){
-          // 模拟向后端异步请求
-          console.log(signupInfo);
-        } else {
-          snackbar({
-            message: "两次密码输入不一致",
-          });
-        }
-      } else {
-        snackbar({
-          message: "请检查注册信息是否正确",
-        });
-      }
-    },
+
+
     routerTo(path) {
       this.$router.push(path);
+    }
+  },
+  data() {
+    return {
+      findPwdType: 'useEmail',
+      findingPwdStep: 0
     }
   }
 }
@@ -86,21 +63,28 @@ export default {
           <mdui-avatar class="card-header-avatar">
             <mdui-icon name="people_alt"></mdui-icon>
           </mdui-avatar>
-          <div class="card-header-title">注册</div>
+          <div class="card-header-title">找回密码</div>
         </div>
+        <mdui-tabs v-if="findingPwdStep===0" value="useEmail" id="find-pwd-type">
+          <mdui-tab value="useEmail" icon="email" inline @click="findPwdType = 'useEmail'">邮箱</mdui-tab>
+          <mdui-tab value="usePhone" icon="phone" inline @click="findPwdType = 'usePhone'">手机</mdui-tab>
+        </mdui-tabs>
         <div class="signup-form">
-          <mdui-text-field icon="email" label="邮箱" type="email" id="signup-email" required></mdui-text-field>
-          <mdui-text-field icon="key" label="密码" type="password" id="signup-pwd" required></mdui-text-field>
-          <mdui-text-field icon="key" label="重复密码" type="password" id="signup-pwd-re" required></mdui-text-field>
-          <mdui-text-field icon="phone" label="手机号码（选填）" type="number" id="signup-phone"></mdui-text-field>
-          <mdui-checkbox id="checkbox-agree-user-license">同意用户协议</mdui-checkbox>
+          <mdui-linear-progress :value="(findingPwdStep+1)/4"></mdui-linear-progress>
+          <mdui-text-field v-if="findPwdType === 'useEmail' && !findingPwdStep" icon="email" label="邮箱" type="email" id="findpass-email" required></mdui-text-field>
+          <mdui-text-field v-if="findPwdType === 'usePhone' && !findingPwdStep" icon="phone" label="手机" type="number" id="findpass-phone" required></mdui-text-field>
+          <p v-if="findingPwdStep===1"><mdui-icon name='done_all'></mdui-icon>已发送验证码，请您查看</p>
+          <mdui-text-field v-if="findingPwdStep === 1" icon="key" label="验证码" type="number" id="findpass-rec-code" required></mdui-text-field>
+          <mdui-text-field v-if="findingPwdStep === 2" icon="key" label="密码" type="password" id="set-new-pwd" required></mdui-text-field>
+          <mdui-text-field v-if="findingPwdStep === 2" icon="key" label="重复密码" type="password" id="set-new-pwd-re" required></mdui-text-field>
         </div>
         <div class="card-others">
           <div class="action-1">
-            <mdui-button variant="filled" @click="submitSignupRequest()">注册</mdui-button>
-            <div class="action-1-1">
-              <mdui-button variant="tonal" @click="routerTo('/login')">登录</mdui-button>
-            </div>
+            <mdui-button variant="tonal" @click="routerTo('/login')">返回登录</mdui-button>
+            <mdui-button v-if="findingPwdStep === 0" variant="filled" @click="submitFirstRequest()">下一步</mdui-button>
+            <mdui-button v-if="findingPwdStep === 1" variant="filled" @click="submitSecondRequest()">下一步</mdui-button>
+            <mdui-button v-if="findingPwdStep === 2" variant="filled" @click="submitThirdRequest()">下一步</mdui-button>
+            <mdui-button v-if="findingPwdStep === 3" variant="filled" @click="routerTo('/login')">完成</mdui-button>
           </div>
         </div>
       </mdui-card>
@@ -194,7 +178,6 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap:20px;
   width: 100%;
 }
 .card-header{
@@ -206,6 +189,9 @@ export default {
   gap: 10px;
   background-color: rgb(var(--mdui-color-surface));
 }
+.card mdui-tab{
+  padding: 10px;
+}
 
 .signup-form{
   padding:10px 20px 0 20px;
@@ -214,7 +200,7 @@ export default {
   gap: 20px;
 }
 .card-others{
-  padding: 0 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -222,11 +208,6 @@ export default {
 .action-1{
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-.action-1-1{
-  display: flex;
   align-items: center;
   gap: 10px;
 }

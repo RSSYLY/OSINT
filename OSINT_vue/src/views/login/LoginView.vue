@@ -7,6 +7,31 @@ export default {
     // 更改导航栏标题
     const store = useMainStore();
     store.pageInfo.title = "登录";
+    // 更改抽屉
+    store.pageInfo.drawer={
+      items:[
+        {
+          title:'认证',
+          items:[
+            {
+              title:'登录',
+              link:'/login',
+              active:true
+            },
+            {
+              title:'注册',
+              link:'/signup',
+              active:false
+            },
+            {
+              title:'找回密码',
+              link:'/findpass',
+              active:false
+            }
+          ]
+        }
+      ]
+    }
   },
   methods: {
     // 提交登录请求
@@ -68,6 +93,7 @@ export default {
 
 <template>
 <div class="container">
+  <div class="shade"></div>
   <div class="container-left">
       <div class="left-title">OSINT</div>
       <div class="left-subtitle">开源情报收集与分析系统</div>
@@ -103,7 +129,7 @@ export default {
           <mdui-button variant="filled" @click="submitLoginRequest()">登录</mdui-button>
           <div class="action-1-1">
             <mdui-button variant="tonal" @click="routerTo('/signup')">注册</mdui-button>
-            <mdui-button variant="outlined">忘记密码</mdui-button>
+            <mdui-button variant="outlined" @click="routerTo('/findpass')">忘记密码</mdui-button>
           </div>
         </div>
       </div>
@@ -289,14 +315,14 @@ export default {
   background-size: cover;
 }
 .left-title{
-  font-size:var(--mdui-typescale-headline-large-size);
-  font-weight: var(--mdui-typescale-headline-large-weight);
-  color:rgba(var(--mdui-color-on-surface-dark));
+  z-index: 1;
+  font-size:var(--mdui-typescale-display-medium-size);
+  font-weight: var(--mdui-typescale-display-medium-weight);
 }
 .left-subtitle{
+  z-index: 1;
   font-size:var(--mdui-typescale-headline-small-size);
   font-weight: var(--mdui-typescale-headline-small-weight);
-  color:rgba(var(--mdui-color-on-surface-dark));
 }
 .card-header{
   padding: 40px 20px 10px 20px;
@@ -306,5 +332,12 @@ export default {
   align-items: center;
   gap: 10px;
   background-color: rgb(var(--mdui-color-surface));
+}
+.shade{
+  z-index: 0;
+  position: absolute;
+  width: 100%;
+  height: calc(100vh - 64px);
+  background: rgba(var(--mdui-color-surface-dim),.8);
 }
 </style>
