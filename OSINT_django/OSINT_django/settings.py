@@ -89,7 +89,8 @@ AUTH_USER_MODEL = 'OSINT_authenticate.CustomUser'
 # 自定义用户模型后，需要在 settings.py 中添加 AUTH_USER_MODEL 配置项，指定自定义的用户模型。
 # 即自定义验证后端
 AUTHENTICATION_BACKENDS = [
-    'OSINT_authenticate.backends.MultiFieldBackend',
+    'OSINT_authenticate.backends.EmailPhoneBackend',
+    'django.contrib.auth.backends.ModelBackend',  # 保留原有的ModelBackend
 ]
 
 

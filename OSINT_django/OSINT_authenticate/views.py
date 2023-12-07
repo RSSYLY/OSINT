@@ -34,10 +34,24 @@ def login_view(request):
             login(request, user)
             # 生成或获取用户的Token,token存放于 authtoken_token表
             token, created = Token.objects.get_or_create(user=user)
-            return JsonResponse({'message': '登录成功', 'data': {'taken': token.key}, 'error': 'null'})
+            return JsonResponse({
+                'message': '登录成功',
+                'data': {'token': token.key,
+                         'username': user.username,
+                         'email': user.email,
+                         'phone': user.phone,
+                         'is_superuser': user.is_superuser,
+                         'is_staff': user.is_staff,
+                         'is_active': user.is_active
+                         },
+                'error': 0})
         else:
             # 登录失败
-            return JsonResponse({'message': '账号或密码错误，请重试'}, status=401)
+            return JsonResponse({
+                'message': '用户名或密码错误',
+                'data': {
+                },
+                'error': 1}, status=401)
 
     # 如果不是 POST 请求，返回错误信息
     return JsonResponse({'message': '非法请求'}, status=400)
