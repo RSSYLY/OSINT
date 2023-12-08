@@ -36,6 +36,9 @@ export default {
   methods: {
     // 提交登录请求
     submitLoginRequest() {
+      // 按钮样式
+      this.isSubmitting = true;
+      console.debug(this.isSubmitting)
       // 获取登录方式
       const loginType = document.querySelector('#login-type').getAttribute('value');
       console.log(loginType);
@@ -59,6 +62,8 @@ export default {
           snackbar({
             message: "请检查表单",
           });
+          // 按钮样式
+          this.isSubmitting=false
         }
 
       } else {
@@ -77,6 +82,8 @@ export default {
           snackbar({
             message: "请检查手机号码和密码是否正确",
           });
+          // 按钮样式
+          this.isSubmitting=false
 
         }
       }
@@ -106,6 +113,8 @@ export default {
                 const store = useMainStore();
                 store.userInfo = response.data.data;
                 store.userStatus.isLogin = true;
+                // 跳转到控制台
+                this.$router.push('/dashboard');
 
 
               } else {
@@ -115,6 +124,8 @@ export default {
                   message: response.data.message,
                 });
                 // 在这里可以根据错误信息提示用户登录失败等
+                // 按钮样式
+                this.isSubmitting=false
               }
             })
             .catch(error => {
@@ -123,15 +134,23 @@ export default {
               snackbar({
                 message: "内部错误"+error,
               });
+              // 按钮样式
+              this.isSubmitting=false
             });
 
 
       }
+
   },
     routerTo(path) {
       this.$router.push(path);
     }
-}
+},
+  data(){
+    return {
+      isSubmitting:false
+    }
+  }
 }
 
 </script>
@@ -171,7 +190,7 @@ export default {
       <div class="card-others">
         <mdui-checkbox id="checkbox-rememberMe">记住我</mdui-checkbox>
         <div class="action-1">
-          <mdui-button variant="filled" @click="submitLoginRequest()">登录</mdui-button>
+          <mdui-button variant="filled" @click="submitLoginRequest()" :disabled="isSubmitting" :loading="isSubmitting">登录</mdui-button>
           <div class="action-1-1">
             <mdui-button variant="tonal" @click="routerTo('/signup')">注册</mdui-button>
             <mdui-button variant="outlined" @click="routerTo('/findpass')">忘记密码</mdui-button>

@@ -57,6 +57,14 @@ export default {
         <mdui-menu-item @click="changeTheme('dark')" value="dark">夜间</mdui-menu-item>
       </mdui-menu>
     </mdui-dropdown>
+    <mdui-dropdown v-if="store.userStatus.isLogin" trigger="click" placement="auto" open-delay="150" close-delay="150">
+      <mdui-button-icon icon="account_circle" slot="trigger"></mdui-button-icon>
+      <mdui-menu>
+        <mdui-menu-item>账户</mdui-menu-item>
+        <mdui-divider></mdui-divider>
+        <mdui-menu-item @click="routerTo('/logout')">退出</mdui-menu-item>
+      </mdui-menu>
+    </mdui-dropdown>
   </mdui-top-app-bar>
 </template>
 

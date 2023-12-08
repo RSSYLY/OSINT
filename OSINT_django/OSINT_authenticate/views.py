@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.shortcuts import render
 
+
 # Create your views here.
 
 
@@ -65,8 +66,9 @@ def register_view(request):
 def forgot_password_view(request):
     return JsonResponse({'忘记密码'})
 
+
 def is_token_valid_view(request):
-# 判断token是否有效
+    # 判断token是否有效
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         token = data.get('token')
@@ -77,8 +79,3 @@ def is_token_valid_view(request):
         else:
             return JsonResponse({'message': 'token有效', 'error': 0})
     return JsonResponse({'message': '非法请求'}, status=400)
-
-
-
-
-
