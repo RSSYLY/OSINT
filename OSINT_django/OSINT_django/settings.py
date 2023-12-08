@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'OSINT_authenticate.apps.AuthenticateConfig',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -47,9 +48,16 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# 跨域（调试用，生产环境删除）
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    # Add other origins if needed
 ]
 
 ROOT_URLCONF = 'OSINT_django.urls'

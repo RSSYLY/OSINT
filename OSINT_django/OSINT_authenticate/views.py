@@ -14,8 +14,8 @@ def login_view(request):
         user = None
         # 获取前端发送的 JSON 数据
         data = json.loads(request.body.decode('utf-8'))
-
-        # 提取登录信息
+        print(data)
+        # 提取登录类型
         login_type = data.get('loginType')
 
         # 根据登录类型验证用户
@@ -37,6 +37,7 @@ def login_view(request):
             return JsonResponse({
                 'message': '登录成功',
                 'data': {'token': token.key,
+                         'id': user.id,
                          'username': user.username,
                          'email': user.email,
                          'phone': user.phone,
@@ -48,10 +49,10 @@ def login_view(request):
         else:
             # 登录失败
             return JsonResponse({
-                'message': '用户名或密码错误',
+                'message': '邮箱、手机或密码错误',
                 'data': {
                 },
-                'error': 1}, status=401)
+                'error': 1})
 
     # 如果不是 POST 请求，返回错误信息
     return JsonResponse({'message': '非法请求'}, status=400)
@@ -63,3 +64,21 @@ def register_view(request):
 
 def forgot_password_view(request):
     return JsonResponse({'忘记密码'})
+
+def is_token_valid_view(request):
+# 判断token是否有效
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        token = data.get('token')
+        try:
+            token_obj = Token.objects.get(key=token)
+        except Token.DoesNotExist:
+            return JsonResponse({'message': 'token无效', 'error': 1})
+        else:
+            return JsonResponse({'message': 'token有效', 'error': 0})
+    return JsonResponse({'message': '非法请求'}, status=400)
+
+
+
+
+

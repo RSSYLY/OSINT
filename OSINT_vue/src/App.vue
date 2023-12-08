@@ -2,6 +2,7 @@
 import {setColorScheme,dialog,getTheme,setTheme,getColorFromImage} from "mdui";
 import { RouterLink, RouterView } from 'vue-router'
 import TopAppBar from "@/components/AppBarAndDrawer.vue";
+import {useMainStore} from "@/store/store";
 export default {
   components: {
     TopAppBar,RouterView
@@ -16,6 +17,16 @@ export default {
     setTheme(localStorage.getItem("theme"));
     // 设置主题色
     setColorScheme("#2196f3");
+
+    //从localStorage中获取token,若存在则将token存入store并设置登录状态为true
+    const store = useMainStore();
+    if(localStorage.getItem("token") !== null){
+      store.userStatus.isLogin = true;
+      store.userInfo.token = localStorage.getItem("token");
+    } else {
+      store.userStatus.isLogin = false;
+    }
+
   },
 }
 

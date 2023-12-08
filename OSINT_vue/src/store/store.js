@@ -7,16 +7,23 @@ export const useMainStore = defineStore('myStore', {
             drawer:{
                 items:[
                     {
-                        title:'认证',
-                        items:[
-                            {
-                                title:'登录',
-                                link:'/login'
-                            }
-                        ]
+                        title:'错误，请检查前端配置',
                     }
                 ]
             }
-        }
+        },
+        userInfo: {
+            id: 0,
+            username: "",
+            email: "",
+            phone: "",
+            token: "",
+            is_superuser: false,
+            is_staff: false,
+            is_active: false,
+        },
+        userStatus: {
+            isLogin: false
+        },
     })
 })

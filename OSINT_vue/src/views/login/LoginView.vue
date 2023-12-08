@@ -44,27 +44,31 @@ export default {
       // 获取登录信息
       let loginInfo = {};
       if (loginType === 'useEmail') {
+        // 使用邮箱的情况
         const emailEle = document.querySelector('#loginEmail');
         const pwdEle = document.querySelector('#loginEmail-pwd');
         // 验证是否通过表单验证
         if ( emailEle.reportValidity() && pwdEle.reportValidity()){
           loginInfo = {
+            loginType: 'email',
             email: document.querySelector('#loginEmail').value,
             password: document.querySelector('#loginEmail-pwd').value,
             rememberMe: rememberMe
           }
         } else {
           snackbar({
-            message: "请检查邮箱和密码是否正确",
+            message: "请检查表单",
           });
         }
 
       } else {
+        // 使用手机号码的情况
         const phoneEle = document.querySelector('#loginPhone');
         const pwdEle = document.querySelector('#loginPhone-pwd');
         // 验证是否通过表单验证
         if ( phoneEle.reportValidity() && pwdEle.reportValidity()){
           loginInfo = {
+            loginType: 'phone',
             phone: document.querySelector('#loginPhone').value,
             password: document.querySelector('#loginPhone-pwd').value,
             rememberMe: rememberMe
@@ -78,9 +82,50 @@ export default {
       }
       // 发送登录请求
       if(loginInfo.password){
-        // 模拟向后端异步请求
+        // 向后端异步请求
+        // 发送POST请求
+        // 后端地址写在入口文件了（main.js）
+        console.debug('Login info:', loginInfo);
+        this.$axios.post('/authenticate/login/', loginInfo)
+            .then(response => {
+              console.debug('Response:', response.data)
+              if (response.data.error === 0) {
+                // 处理登录成功的情况
+                console.log('Login successful:', response.data);
+                snackbar({
+                  message: response.data.message,
+                });
+                // 将用户信息存入store
+                // 若未勾选记住我，则仅将数据（包括token）记录在store中
+                // 若勾选记住我，则将token记录在store和localStorage中，下次打开页面时首先检测是否有有效token(在路由中实现)
+                if (loginInfo.rememberMe) {
+                  // 将token存入localStorage
+                  localStorage.setItem("token", response.data.data.token);
+                }
+                // 将用户信息存入store
+                const store = useMainStore();
+                store.userInfo = response.data.data;
+                store.userStatus.isLogin = true;
 
-        console.log(loginInfo);
+
+              } else {
+                // 处理登录失败（账号密码错误，或账号不存在等情况）的情况
+                console.log('Login failed:', response.data.message);
+                snackbar({
+                  message: response.data.message,
+                });
+                // 在这里可以根据错误信息提示用户登录失败等
+              }
+            })
+            .catch(error => {
+              // 处理请求失败的情况
+              console.error('Request failed:', error);
+              snackbar({
+                message: "内部错误"+error,
+              });
+            });
+
+
       }
   },
     routerTo(path) {
