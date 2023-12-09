@@ -12,10 +12,14 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(verbose_name="邮箱", unique=True)
-    phone = models.CharField(verbose_name="手机号码", max_length=15, unique=True, blank=True, null=True)
+    username = models.CharField(verbose_name="用户名", max_length=10, unique=True)
+    password = models.CharField(verbose_name="密码", max_length=30)
+    email = models.EmailField(verbose_name="邮箱", max_length=30, unique=True)
+    # 手机号码可以为空，但不能重复，但是考虑到空也可以重复
+    phone = models.CharField(verbose_name="手机号码", max_length=15, null=True)
 
     class Meta:
         verbose_name = "用户"
         verbose_name_plural = verbose_name
         db_table = "user"
+        unique_together = ['phone', 'email']

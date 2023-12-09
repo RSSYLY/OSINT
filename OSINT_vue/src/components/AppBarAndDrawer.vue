@@ -37,7 +37,7 @@ export default {
 
 <template>
 <!-- 抽屉列表和导航栏都是通过store读取 -->
-  <mdui-navigation-drawer class="main-navigation-drawer">
+  <mdui-navigation-drawer class="main-navigation-drawer" modal close-on-esc close-on-overlay-click>
     <mdui-list style="padding: 20px">
       <div v-for="item in store.pageInfo.drawer.items" :key="item.title">
         <mdui-list-subheader>{{item.title}}</mdui-list-subheader>
