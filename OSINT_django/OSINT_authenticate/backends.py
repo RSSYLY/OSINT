@@ -1,4 +1,4 @@
-# 自定义认证后端，支持邮箱或手机号登录
+# 自定义认证(登录)后端，支持邮箱或手机号登录
 # yourapp/backends.py
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
