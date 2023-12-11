@@ -34,8 +34,181 @@ export default {
     }
   },
   methods: {
-
-
+    sendCode(){
+      // 先判断是那种类型
+      if(this.findPwdType === 'useEmail'){
+        // 邮箱找回密码
+        this.sendEmailCode();
+      } else if(this.findPwdType === 'usePhone'){
+        // 手机找回密码
+        this.sendPhoneCode();
+      }
+    },
+    sendEmailCode(){
+      // 获取邮箱
+      const emailEle = document.querySelector('#findpass-email');
+      // 验证邮箱是否通过表单验证
+      if ( emailEle.reportValidity() ){
+        // 获取要发送的数据为json
+        const submitInfo={
+          type : 'email',
+          target: emailEle.value
+        }
+        console.debug("发送验证码到邮箱",submitInfo)
+        // 按钮加载状态
+        this.isSubmitting = true;
+        // 异步请求
+        this.$axios.post('/authenticate/forgot-password/send-code/',submitInfo)
+          .then(response=>{
+            console.debug("发送验证码返回：",response.data)
+            // 按钮加载状态
+            this.isSubmitting = false;
+            if(response.data.error === 0){
+              // 请求成功
+              // 下一步
+              this.findingPwdStep = 1;
+              snackbar({
+                message: "验证码已发送",
+              });
+            } else {
+              // 请求失败
+              snackbar({
+                message: response.data.message,
+              });
+            }
+          })
+          .catch(error=>{
+            console.debug("后端请求失败",error)
+            // 按钮加载状态
+            this.isSubmitting = false;
+            // 请求失败
+            snackbar({
+              message: "内部错误",
+            });
+          })
+      } else {
+        snackbar({
+          message: "请填写表单",
+        });
+      }
+    },
+    sendPhoneCode(){
+      // 获取手机
+      const phoneEle = document.querySelector('#findpass-phone');
+      // 验证手机是否通过表单验证
+      if ( phoneEle.reportValidity() ){
+        // 获取要发送的数据为json
+        const submitInfo={
+          type : 'phone',
+          target: phoneEle.value
+        }
+        console.debug("发送验证码到手机",submitInfo)
+        // 按钮加载状态
+        this.isSubmitting = true;
+        // 异步请求
+        this.$axios.post('/authenticate/forgot-password/send-code/',submitInfo)
+          .then(response=>{
+            console.debug("发送验证码返回：",response.data)
+            // 按钮加载状态
+            this.isSubmitting = false;
+            if(response.data.error === 0){
+              // 请求成功
+              // 下一步
+              this.findingPwdStep = 1;
+              snackbar({
+                message: "验证码已发送",
+              });
+            } else {
+              // 请求失败
+              snackbar({
+                message: response.data.message,
+              });
+            }
+          })
+          .catch(error=>{
+            console.debug("后端请求失败",error)
+            // 按钮加载状态
+            this.isSubmitting = false;
+            // 请求失败
+            snackbar({
+              message: "内部错误",
+            });
+          })
+      } else {
+        snackbar({
+          message: "请填写表单",
+        });
+      }
+    },
+   submitPass(){
+      // 获取登录类型
+      const loginType = () => {
+        if(this.findPwdType === 'useEmail'){
+          return 'email';
+        } else if(this.findPwdType === 'usePhone'){
+          return 'phone';
+        }
+     }
+      // 获取验证码
+      const recCodeEle = document.querySelector('#findpass-rec-code');
+      // 获取密码
+      const newPwdEle = document.querySelector('#set-new-pwd');
+      // 获取重复密码
+      const newPwdReEle = document.querySelector('#set-new-pwd-re');
+      // 验证表单是否通过验证
+      if ( recCodeEle.reportValidity() && newPwdEle.reportValidity() && newPwdReEle.reportValidity() ){
+        // 同时确保两边密码一致
+        if(newPwdEle.value !== newPwdReEle.value){
+          snackbar({
+            message: "两次密码不一致",
+          });
+          return;
+        }
+        // 获取要发送的数据为json
+        const submitInfo={
+          type:loginType(),
+          target: loginType() === 'email' ? document.querySelector('#findpass-email').value : document.querySelector('#findpass-phone').value,
+          verificationCode : recCodeEle.value,
+          password: newPwdEle.value
+        }
+        console.debug("提交新密码",submitInfo)
+        // 按钮加载状态
+        this.isSubmitting = true;
+        // 异步请求
+        this.$axios.post('/authenticate/forgot-password/',submitInfo)
+          .then(response=>{
+            console.debug("提交新密码返回：",response.data)
+            // 按钮加载状态
+            this.isSubmitting = false;
+            if(response.data.error === 0){
+              // 请求成功
+              // 带回登录页
+              this.$router.push('/login');
+              snackbar({
+                message: "密码修改成功",
+              });
+            } else {
+              // 请求失败
+              snackbar({
+                message: response.data.message,
+              });
+            }
+          })
+          .catch(error=>{
+            console.debug("后端请求失败",error)
+            // 按钮加载状态
+            this.isSubmitting = false;
+            // 请求失败
+            snackbar({
+              message: "内部错误",
+            });
+          })
+      } else {
+        snackbar({
+          message: "请填写表单",
+        });
+      }
+   },
     routerTo(path) {
       this.$router.push(path);
     }
@@ -70,21 +243,19 @@ export default {
           <mdui-tab value="usePhone" icon="phone" inline @click="findPwdType = 'usePhone'">手机</mdui-tab>
         </mdui-tabs>
         <div class="signup-form">
-          <mdui-linear-progress :value="(findingPwdStep+1)/4"></mdui-linear-progress>
-          <mdui-text-field v-if="findPwdType === 'useEmail' && !findingPwdStep" icon="email" label="邮箱" type="email" id="findpass-email" required></mdui-text-field>
-          <mdui-text-field v-if="findPwdType === 'usePhone' && !findingPwdStep" icon="phone" label="手机" type="number" id="findpass-phone" required></mdui-text-field>
-          <p v-if="findingPwdStep===1"><mdui-icon name='done_all'></mdui-icon>已发送验证码，请您查看</p>
+<!--          <mdui-linear-progress :value="(findingPwdStep+1)/2"></mdui-linear-progress>-->
+          <mdui-text-field v-if="findPwdType === 'useEmail'" :disabled="this.findingPwdStep!==0" icon="email" label="邮箱" type="email" id="findpass-email" required></mdui-text-field>
+          <mdui-text-field v-if="findPwdType === 'usePhone'" :disabled="this.findingPwdStep!==0" icon="phone" label="手机" type="number" id="findpass-phone" required></mdui-text-field>
           <mdui-text-field v-if="findingPwdStep === 1" icon="key" label="验证码" type="number" id="findpass-rec-code" required></mdui-text-field>
-          <mdui-text-field v-if="findingPwdStep === 2" icon="key" label="密码" type="password" id="set-new-pwd" required></mdui-text-field>
-          <mdui-text-field v-if="findingPwdStep === 2" icon="key" label="重复密码" type="password" id="set-new-pwd-re" required></mdui-text-field>
+          <mdui-text-field v-if="findingPwdStep === 1" icon="key" label="密码" type="password" id="set-new-pwd" required></mdui-text-field>
+          <mdui-text-field v-if="findingPwdStep === 1" icon="key" label="重复密码" type="password" id="set-new-pwd-re" required></mdui-text-field>
         </div>
         <div class="card-others">
           <div class="action-1">
-            <mdui-button variant="tonal" @click="routerTo('/login')">返回登录</mdui-button>
-            <mdui-button v-if="findingPwdStep === 0" variant="filled" @click="submitFirstRequest()">下一步</mdui-button>
-            <mdui-button v-if="findingPwdStep === 1" variant="filled" @click="submitSecondRequest()">下一步</mdui-button>
-            <mdui-button v-if="findingPwdStep === 2" variant="filled" @click="submitThirdRequest()">下一步</mdui-button>
-            <mdui-button v-if="findingPwdStep === 3" variant="filled" @click="routerTo('/login')">完成</mdui-button>
+            <mdui-button v-if="findingPwdStep===0" variant="tonal" @click="routerTo('/login')">返回登录</mdui-button>
+            <mdui-button v-if="findingPwdStep===1" variant="tonal" @click="findingPwdStep = 0">上一步</mdui-button>
+            <mdui-button v-if="findingPwdStep === 0" variant="filled" @click="sendCode">下一步</mdui-button>
+            <mdui-button v-if="findingPwdStep === 1" variant="filled" @click="submitPass">提交</mdui-button>
           </div>
         </div>
       </mdui-card>
@@ -194,7 +365,7 @@ export default {
 }
 
 .signup-form{
-  padding:10px 20px 0 20px;
+  padding:20px 20px 10px 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;

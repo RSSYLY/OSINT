@@ -23,6 +23,7 @@ export default {
     if(localStorage.getItem("token") !== null){
       store.userStatus.isLogin = true;
       store.userInfo.token = localStorage.getItem("token");
+      console.debug("初始化：从浏览器存储获取Token成功")
     } else {
       store.userStatus.isLogin = false;
     }

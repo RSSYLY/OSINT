@@ -95,11 +95,10 @@ export default {
           email: emailEle.value,
           verificationCode: verificationCodeEle.value,
           password: pwdEle.value,
-          passwordRe: pwdReEle.value,
           phone: phoneEle.value
         }
         // 发送注册请求
-        if(signupInfo.password === signupInfo.passwordRe){
+        if(pwdEle.value === pwdReEle.value){
           // 按钮加载状态
           this.isSubmitting = true;
           // 向后端异步请求
@@ -112,6 +111,7 @@ export default {
                 snackbar({
                   message: response.data.message,
                 });
+                this.signupStep = 2;
                 // 跳转到登录页
                 this.$router.push('/login');
               } else {
@@ -168,6 +168,7 @@ export default {
           </mdui-avatar>
           <div class="card-header-title">注册</div>
         </div>
+        <mdui-linear-progress :value="(signupStep+1)/3"></mdui-linear-progress>
         <div class="signup-form">
           <mdui-text-field icon="email" label="邮箱" type="email" id="signup-email" required :disabled="this.signupStep!==0"></mdui-text-field>
           <mdui-text-field v-if="this.signupStep===1" icon="key" label="验证码" type="number" id="verification-code" required></mdui-text-field>
@@ -178,7 +179,7 @@ export default {
         </div>
         <div class="card-others">
           <div class="action-1">
-            <mdui-button v-if="this.signupStep===0" variant="filled" @click="submitVerificationCode()" :disabled="isSubmitting" :loading="isSubmitting">发送验证码</mdui-button>
+            <mdui-button v-if="this.signupStep===0" variant="filled" @click="submitVerificationCode()" :disabled="isSubmitting" :loading="isSubmitting">下一步</mdui-button>
             <mdui-button v-if="this.signupStep===1" variant="filled" @click="submitSignupRequest()" :disabled="isSubmitting" :loading="isSubmitting">注册</mdui-button>
             <div class="action-1-1">
               <mdui-button v-if="this.signupStep===1" variant="tonal" @click="this.signupStep=0" :disabled="isSubmitting">返回上一步</mdui-button>
@@ -277,11 +278,11 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap:20px;
+  gap:0px;
   width: 100%;
 }
 .card-header{
-  padding: 40px 20px 20px 20px;
+  padding: 40px 20px 30px 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -291,13 +292,13 @@ export default {
 }
 
 .signup-form{
-  padding:10px 20px 0 20px;
+  padding:20px 20px 0 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 .card-others{
-  padding: 0 20px 20px 20px;
+  padding:10px 20px 20px 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;

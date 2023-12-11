@@ -169,9 +169,57 @@ def forgot_password_send_verification_code(request):
         return JsonResponse({'message': '内部错误' + str(e), 'error': 1})
 
 
+@csrf_exempt
+@require_POST
 def forgot_password_view(request):
-# 忘记密码
+    # 忘记密码
+    # 接收到的数据结构：{"type":"email或phone","target": "邮箱或手机号", "verificationCode": "验证码", "password": "新密码"}
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        target = data.get('target')
+        verification_code = data.get('verificationCode')
+        password = data.get('password')
+        if target and verification_code and password and data.get('type'):
+            # 当值都存在时再下一步
+            cache_key = f'forgot_verification_code_{target}'
+            stored_verification_code = cache.get(cache_key)
+            if verification_code == stored_verification_code:
+                # 对验证码验证，看验证码能否对上邮箱
+                # 如果使用邮箱找回密码
+                if data.get('type') == 'email':
+                    # 先寻找该邮箱是否注册
+                    if not CustomUser.objects.filter(email=target).exists():
+                        return JsonResponse({'message': '该邮箱未注册', 'error': 1})
+                    # 再修改密码
+                    user = CustomUser.objects.get(email=target)
+                    user.set_password(password)
+                    user.save()
+                    # 删除验证码缓存
+                    cache.delete(cache_key)
+                    return JsonResponse({'message': '密码修改成功，请手动登录', 'error': 0})
+                # 如果使用手机号找回密码
+                elif data.get('type') == 'phone':
+                    # 手机号为空肯定不行
+                    if not target:
+                        return JsonResponse({'message': '手机号不能为空', 'error': 1})
+                    # 先寻找该手机号是否注册
+                    if not CustomUser.objects.filter(phone=target).exists():
+                        return JsonResponse({'message': '该手机号未注册', 'error': 1})
+                    # 再修改密码
+                    user = CustomUser.objects.get(phone=target)
+                    user.set_password(password)
+                    user.save()
+                    # 删除验证码缓存
+                    cache.delete(cache_key)
+                    return JsonResponse({'message': '密码修改成功，请手动登录', 'error': 0})
+                else:
+                    return JsonResponse({'message': '缺少参数', 'error': 1})
+            else:
+                return JsonResponse({'message': '验证码错误', 'error': 1})
+        else:
+            return JsonResponse({'message': '缺少参数', 'error': 1})
     return JsonResponse({'message': '非法请求'}, status=400)
+
 
 def is_token_valid_view(request):
     # 判断token是否有效
