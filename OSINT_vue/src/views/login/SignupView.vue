@@ -179,12 +179,12 @@ export default {
         </div>
         <div class="card-others">
           <div class="action-1">
-            <mdui-button v-if="this.signupStep===0" variant="filled" @click="submitVerificationCode()" :disabled="isSubmitting" :loading="isSubmitting">下一步</mdui-button>
-            <mdui-button v-if="this.signupStep===1" variant="filled" @click="submitSignupRequest()" :disabled="isSubmitting" :loading="isSubmitting">注册</mdui-button>
             <div class="action-1-1">
               <mdui-button v-if="this.signupStep===1" variant="tonal" @click="this.signupStep=0" :disabled="isSubmitting">返回上一步</mdui-button>
               <mdui-button variant="outlined" @click="routerTo('/login')">返回登录</mdui-button>
             </div>
+            <mdui-button v-if="this.signupStep===0" variant="filled" @click="submitVerificationCode()" :disabled="isSubmitting" :loading="isSubmitting">下一步</mdui-button>
+            <mdui-button v-if="this.signupStep===1" variant="filled" @click="submitSignupRequest()" :disabled="isSubmitting" :loading="isSubmitting">注册</mdui-button>
           </div>
         </div>
       </mdui-card>

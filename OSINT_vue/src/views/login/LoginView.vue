@@ -190,11 +190,11 @@ export default {
       <div class="card-others">
         <mdui-checkbox id="checkbox-rememberMe">记住我</mdui-checkbox>
         <div class="action-1">
-          <mdui-button variant="filled" @click="submitLoginRequest()" :disabled="isSubmitting" :loading="isSubmitting">登录</mdui-button>
           <div class="action-1-1">
-            <mdui-button variant="tonal" @click="routerTo('/signup')">注册</mdui-button>
             <mdui-button variant="outlined" @click="routerTo('/findpass')">忘记密码</mdui-button>
+            <mdui-button variant="tonal" @click="routerTo('/signup')">注册</mdui-button>
           </div>
+          <mdui-button variant="filled" @click="submitLoginRequest()" :disabled="isSubmitting" :loading="isSubmitting">登录</mdui-button>
         </div>
       </div>
     </mdui-card>
