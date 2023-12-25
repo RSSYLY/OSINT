@@ -4,31 +4,221 @@ from Utils.Code import *
 import json
 
 
-# Create your views here.
-def get_all_objects(req):
+# ----------------------------- Events CRUD -----------------------------
+# 获取所有Events
+def get_all_events(request):
+    ret_data = {
+        "events": [],
+        "code": SUCCESS_CODE,
+        "msg": ""
+    }
+    try:
+        events = OSINT_DB.models.Events.objects.all()
+        ret_data["events"] = [{"id": e.id, "name": e.name, "date": e.date, "score": e.score} for e in events]
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+# 添加新Event
+def add_event(request):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Event added successfully!"
+    }
+    try:
+        name = request.POST.get('name')
+        date = request.POST.get('date')  # YYYY-MM-DD format
+        score = request.POST.get('score')
+        event = OSINT_DB.models.Events(name=name, date=date, score=score)
+        event.save()
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+# 更新Event
+def update_event(request, event_id):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Event updated successfully!"
+    }
+    try:
+        event = OSINT_DB.models.Events.objects.get(id=event_id)
+        event.name = request.POST.get('name', event.name)
+        event.date = request.POST.get('date', event.date)
+        event.score = request.POST.get('score', event.score)
+        event.save()
+    except OSINT_DB.models.Events.DoesNotExist:
+        ret_data["code"] = ITEM_NOT_FOUND_CODE
+        ret_data["msg"] = "Event not found!"
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+# 删除Event
+def delete_event(request, event_id):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Event deleted successfully!"
+    }
+    try:
+        event = OSINT_DB.models.Events.objects.get(id=event_id)
+        event.delete()
+    except OSINT_DB.models.Events.DoesNotExist:
+        ret_data["code"] = ITEM_NOT_FOUND_CODE
+        ret_data["msg"] = "Event not found!"
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+# ----------------------------- Objects CRUD -----------------------------
+# 获取所有Objects
+def get_all_objects(request):
     ret_data = {
         "objects": [],
         "code": SUCCESS_CODE,
         "msg": ""
     }
     try:
-        Objects_ret = OSINT_DB.models.Objects.objects.all()
-        ret_data["objects"] = [i.to_dict() for i in Objects_ret]
-        print(ret_data)
-        return HttpResponse(json.dumps(ret_data), content_type="application/json")
+        objects = OSINT_DB.models.Objects.objects.all()
+        ret_data["events"] = [{"id": e.id, "name": e.name, "role": e.role, "gender": e.gender} for e in objects]
     except Exception as e:
         ret_data["code"] = SERVER_FAIL_CODE
-        ret_data["msg"] = e.__str__()
-        return HttpResponse(json.dumps(ret_data), content_type="application/json")
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+    # Similar to get_all_events, retrieve all Objects entries and return them.
 
 
-def get_all_events(req):
+# 添加新Object
+def add_object(request):
     ret_data = {
-        "objects": [],
+        "code": SUCCESS_CODE,
+        "msg": "Object added successfully!"
+    }
+    try:
+        name = request.POST.get('name')
+        role = request.POST.get('role')
+        gender = request.POST.get('gender')
+        new_object = OSINT_DB.models.Objects(name=name, role=role, gender=gender)
+        new_object.save()
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+# 更新Object
+def update_object(request, object_id):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Object updated successfully!"
+    }
+    try:
+        obj = OSINT_DB.models.Objects.objects.get(id=object_id)
+        obj.name = request.POST.get('name', obj.name)
+        obj.role = request.POST.get('role', obj.role)
+        obj.gender = request.POST.get('gender', obj.gender)
+        obj.save()
+    except OSINT_DB.models.Objects.DoesNotExist:
+        ret_data["code"] = ITEM_NOT_FOUND_CODE
+        ret_data["msg"] = "Object not found!"
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+# 删除Object
+def delete_object(request, object_id):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Object deleted successfully!"
+    }
+    try:
+        obj = OSINT_DB.models.Objects.objects.get(id=object_id)
+        obj.delete()
+    except OSINT_DB.models.Objects.DoesNotExist:
+        ret_data["code"] = ITEM_NOT_FOUND_CODE
+        ret_data["msg"] = "Object not found!"
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+# ----------------------------- Keywords CRUD -----------------------------
+# 获取所有Keywords
+def get_all_keywords(request):
+    ret_data = {
+        "keywords": [],
         "code": SUCCESS_CODE,
         "msg": ""
     }
-    Events_ret = OSINT_DB.models.Events.objects.all()
-    ret_data["objects"] = [i.to_dict() for i in Events_ret]
-    print(ret_data)
+    try:
+        keywords = OSINT_DB.models.Keywords.objects.all()
+        ret_data["keywords"] = [{"id": k.id, "keyword": k.keyword, "date": k.date} for k in keywords]
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
     return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+# 添加新Keyword
+def add_keyword(request):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Keyword added successfully!"
+    }
+    try:
+        keyword = request.POST.get('keyword')
+        new_keyword = OSINT_DB.models.Keywords(keyword=keyword)
+        new_keyword.save()
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+# 更新Keyword
+def update_keyword(request, keyword_id):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Keyword updated successfully!"
+    }
+    try:
+        keyword = OSINT_DB.models.Keywords.objects.get(id=keyword_id)
+        keyword.keyword = request.POST.get('keyword', keyword.keyword)
+        keyword.save()
+    except OSINT_DB.models.Keywords.DoesNotExist:
+        ret_data["code"] = ITEM_NOT_FOUND_CODE
+        ret_data["msg"] = "Keyword not found!"
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+# 删除Keyword
+def delete_keyword(request, keyword_id):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "keyword deleted successfully!"
+    }
+    try:
+        obj = OSINT_DB.models.Keywords.objects.get(id=keyword_id)
+        obj.delete()
+    except OSINT_DB.models.Keywords.DoesNotExist:
+        ret_data["code"] = ITEM_NOT_FOUND_CODE
+        ret_data["msg"] = "Object not found!"
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+    # Similar to delete_event, retrieve the keyword by 'keyword_id' and delete it.
