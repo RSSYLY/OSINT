@@ -88,7 +88,7 @@ def get_all_objects(request):
     }
     try:
         objects = OSINT_DB.models.Objects.objects.all()
-        ret_data["events"] = [{"id": e.id, "name": e.name, "role": e.role, "gender": e.gender} for e in objects]
+        ret_data["objects"] = [{"id": e.id, "name": e.name, "role": e.role, "gender": e.gender} for e in objects]
     except Exception as e:
         ret_data["code"] = SERVER_FAIL_CODE
         ret_data["msg"] = str(e)
