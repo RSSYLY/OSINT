@@ -179,7 +179,8 @@ def add_keyword(request):
         "msg": "Keyword added successfully!"
     }
     try:
-        keyword = request.POST.get('keyword')
+        data = json.loads(request.body.decode('utf-8'))
+        keyword = data.get('keyword')
         new_keyword = OSINT_DB.models.Keywords(keyword=keyword)
         new_keyword.save()
     except Exception as e:
@@ -195,8 +196,9 @@ def update_keyword(request, keyword_id):
         "msg": "Keyword updated successfully!"
     }
     try:
+        data = json.loads(request.body.decode('utf-8'))
         keyword = OSINT_DB.models.Keywords.objects.get(id=keyword_id)
-        keyword.keyword = request.POST.get('keyword', keyword.keyword)
+        keyword.keyword = data.get('keyword', keyword.keyword)
         keyword.save()
     except OSINT_DB.models.Keywords.DoesNotExist:
         ret_data["code"] = ITEM_NOT_FOUND_CODE
