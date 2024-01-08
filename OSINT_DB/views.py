@@ -104,9 +104,10 @@ def add_object(request):
         "msg": "Object added successfully!"
     }
     try:
-        name = request.POST.get('name')
-        role = request.POST.get('role')
-        gender = request.POST.get('gender')
+        data = json.loads(request.body.decode('utf-8'))
+        name = data.get('name')
+        role = data.get('role')
+        gender = data.get('gender')
         new_object = OSINT_DB.models.Objects(name=name, role=role, gender=gender)
         new_object.save()
     except Exception as e:
@@ -122,10 +123,11 @@ def update_object(request, object_id):
         "msg": "Object updated successfully!"
     }
     try:
+        data = json.loads(request.body.decode('utf-8'))
         obj = OSINT_DB.models.Objects.objects.get(id=object_id)
-        obj.name = request.POST.get('name', obj.name)
-        obj.role = request.POST.get('role', obj.role)
-        obj.gender = request.POST.get('gender', obj.gender)
+        obj.name = data.get('name', obj.name)
+        obj.role = data .get('role', obj.role)
+        obj.gender = data.get('gender', obj.gender)
         obj.save()
     except OSINT_DB.models.Objects.DoesNotExist:
         ret_data["code"] = ITEM_NOT_FOUND_CODE
