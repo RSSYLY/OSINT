@@ -1492,7 +1492,7 @@
     </table>
     <column id="537" parent="518" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
@@ -1507,7 +1507,7 @@
       <Position>3</Position>
     </column>
     <column id="540" parent="518" name="score">
-      <DasType>REAL|0s</DasType>
+      <DasType>real|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
@@ -1517,7 +1517,7 @@
     </key>
     <column id="542" parent="519" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
@@ -1557,7 +1557,7 @@
     </key>
     <column id="550" parent="520" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
@@ -1597,7 +1597,7 @@
     </key>
     <column id="558" parent="521" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
@@ -1617,7 +1617,7 @@
     </key>
     <column id="562" parent="522" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
@@ -1627,12 +1627,12 @@
       <Position>2</Position>
     </column>
     <column id="564" parent="522" name="role">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
     <column id="565" parent="522" name="gender">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
@@ -1642,7 +1642,7 @@
     </key>
     <column id="567" parent="523" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
@@ -1682,17 +1682,17 @@
     </key>
     <column id="575" parent="524" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
     <column id="576" parent="524" name="object1_id">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
     <column id="577" parent="524" name="object2_id">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
@@ -1702,7 +1702,7 @@
     </key>
     <column id="579" parent="525" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
@@ -1726,17 +1726,17 @@
     </key>
     <column id="584" parent="526" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
     <column id="585" parent="526" name="group_id">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
     <column id="586" parent="526" name="permission_id">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
@@ -1771,12 +1771,12 @@ permission_id</ColNames>
     </key>
     <column id="593" parent="527" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
     <column id="594" parent="527" name="content_type_id">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
@@ -1811,7 +1811,7 @@ codename</ColNames>
     </key>
     <column id="601" parent="528" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
@@ -1879,17 +1879,17 @@ codename</ColNames>
     </key>
     <column id="615" parent="529" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
     <column id="616" parent="529" name="user_id">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
     <column id="617" parent="529" name="group_id">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
@@ -1924,17 +1924,17 @@ group_id</ColNames>
     </key>
     <column id="624" parent="530" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
     <column id="625" parent="530" name="user_id">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
     <column id="626" parent="530" name="permission_id">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
@@ -1972,12 +1972,12 @@ permission_id</ColNames>
     </check>
     <column id="634" parent="531" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
     <column id="635" parent="531" name="object_id">
-      <DasType>TEXT|0s</DasType>
+      <DasType>text|0s</DasType>
       <Position>2</Position>
     </column>
     <column id="636" parent="531" name="object_repr">
@@ -1991,16 +1991,16 @@ permission_id</ColNames>
       <Position>4</Position>
     </column>
     <column id="638" parent="531" name="change_message">
-      <DasType>TEXT|0s</DasType>
+      <DasType>text|0s</DasType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
     <column id="639" parent="531" name="content_type_id">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <Position>6</Position>
     </column>
     <column id="640" parent="531" name="user_id">
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>7</Position>
     </column>
@@ -2035,7 +2035,7 @@ permission_id</ColNames>
     </key>
     <column id="647" parent="532" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
@@ -2060,7 +2060,7 @@ model</ColNames>
     </key>
     <column id="652" parent="533" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>INTEGER|0s</DasType>
+      <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
@@ -2089,7 +2089,7 @@ model</ColNames>
       <Position>1</Position>
     </column>
     <column id="658" parent="534" name="session_data">
-      <DasType>TEXT|0s</DasType>
+      <DasType>text|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
