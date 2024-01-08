@@ -48,9 +48,10 @@ def update_event(request, event_id):
     }
     try:
         event = OSINT_DB.models.Events.objects.get(id=event_id)
-        event.name = request.POST.get('name', event.name)
-        event.date = request.POST.get('date', event.date)
-        event.score = request.POST.get('score', event.score)
+        data = json.loads(request.body.decode('utf-8'))
+        event.name = data.get('name', event.name)
+        event.date = data.get('date', event.date)
+        event.score = data.get('score', event.score)
         event.save()
     except OSINT_DB.models.Events.DoesNotExist:
         ret_data["code"] = ITEM_NOT_FOUND_CODE
