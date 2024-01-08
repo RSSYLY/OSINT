@@ -28,9 +28,10 @@ def add_event(request):
         "msg": "Event added successfully!"
     }
     try:
-        name = request.POST.get('name')
-        date = request.POST.get('date')  # YYYY-MM-DD format
-        score = request.POST.get('score')
+        data = json.loads(request.body.decode('utf-8'))
+        name = data.get('name')
+        date = data.get('date')  # YYYY-MM-DD  Format
+        score = data.get('score')
         event = OSINT_DB.models.Events(name=name, date=date, score=score)
         event.save()
     except Exception as e:
