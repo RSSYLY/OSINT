@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import OSINT_DB.views
-
+from OSINT_django import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/get_all_objects', OSINT_DB.views.get_all_objects),
@@ -31,4 +31,9 @@ urlpatterns = [
     path('api/add_keyword', OSINT_DB.views.add_keyword),
     path('api/update_keyword/<int:keyword_id>', OSINT_DB.views.update_keyword),
     path('api/delete_keyword/<int:keyword_id>', OSINT_DB.views.delete_keyword),
+    path(r'^index/', views.index),
+    path(r'^login/', views.login),
+    path(r'^register/', views.register),
+    path(r'^logout/', views.logout),
+
 ]
