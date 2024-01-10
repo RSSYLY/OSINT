@@ -1,11 +1,8 @@
-import hashlib
-from django.shortcuts import render, redirect, HttpResponse
-from rest_framework.decorators import api_view
-import json
-from OSINT_django.models import *
+from django.shortcuts import HttpResponse
 
-from Utils.Code import *
+# from OSINT_django.models import User
 
+"""
 def index(request):
     pass
     return render(request, 'login/index.html')
@@ -18,7 +15,7 @@ def login(request):
         # user = request.data['msg'] # 获取post请求中的参数,我不知道这是干嘛的，九敏
         name = data.get('name')
         pwd = data.get('pwd')
-        admin = User.objects.filter(name=name)
+        admin = User.objects.filter(username=name)
         if len(admin) == 0:
             return HttpResponse('not have this user !!!')
         else:
@@ -26,7 +23,6 @@ def login(request):
             h1 = hashlib.md5()
             h1.update(pwd.encode(encoding='utf-8'))
             if admin[0].s_pwd == h1.hexdigest():
-
                 request.session['user_id'] = admin[0].s_username
                 return HttpResponse('login success!')
             else:
@@ -60,3 +56,35 @@ def register(request):
 def logout(request):
     pass
     return redirect('/index/')
+"""
+
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+
+
+def register(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        email = request.POST.get('email')
+        if username and password and email:
+            user = User.objects.create_user(username, email, password)
+            user.save()
+            return HttpResponse('User created successfully')
+        else:
+            return HttpResponse('Missing username, password or email')
+
+
+def login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if username and password:
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return HttpResponse('User logged in')
+            else:
+                return HttpResponse('Invalid credentials')
+        else:
+            return HttpResponse('Missing username or password')

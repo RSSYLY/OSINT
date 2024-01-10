@@ -14,12 +14,10 @@ class Objects(models.Model):
     gender = models.IntegerField(verbose_name="gender of object")
 
     def to_dict(self):
-        return {"name":self.name,"role":self.role,"gender":self.gender}
+        return {"name": self.name, "role": self.role, "gender": self.gender}
 
     def __str__(self):
         return self.name + "," + str(self.role) + "," + str(self.gender)
-
-
 
 
 class Keywords(models.Model):
