@@ -31,9 +31,9 @@ urlpatterns = [
     path('api/add_keyword', OSINT_DB.views.add_keyword),
     path('api/update_keyword/<int:keyword_id>', OSINT_DB.views.update_keyword),
     path('api/delete_keyword/<int:keyword_id>', OSINT_DB.views.delete_keyword),
-    path(r'^index/', views.index),
-    path(r'^login/', views.login),
-    path(r'^register/', views.register),
-    path(r'^logout/', views.logout),
+    path('index/', views.index),
+    path('login/', views.login),
+    path('register/', views.register),
+    path('logout/', views.logout),
 
 ]
