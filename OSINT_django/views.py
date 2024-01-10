@@ -1,30 +1,32 @@
 import hashlib
-from rest_framework.decorators import api_view
 from django.shortcuts import render, redirect, HttpResponse
-
+from rest_framework.decorators import api_view
+import json
 from OSINT_django.models import *
 
+from Utils.Code import *
 
 def index(request):
     pass
     return render(request, 'login/index.html')
 
 
-@api_view(['POST', ])
+@api_view(['POST', ])  # 修饰器，表示这个函数只能接受post请求，下面这一坨都是网上抄的
 def login(request):
     if request.method == 'POST':
-        user = request.data['msg']
-        name = user['name']
-        pwd = user['pwd']
-        admin = User.objects.filter(s_username=name, i_groupid=1)
+        data = json.loads(request.body.decode('utf-8'))
+        # user = request.data['msg'] # 获取post请求中的参数,我不知道这是干嘛的，九敏
+        name = data.get('name')
+        pwd = data.get('pwd')
+        admin = User.objects.filter(name=name)
         if len(admin) == 0:
             return HttpResponse('not have this user !!!')
         else:
-            # md5加密，不用管
+            # md5加密
             h1 = hashlib.md5()
             h1.update(pwd.encode(encoding='utf-8'))
             if admin[0].s_pwd == h1.hexdigest():
-                # 设置session中的值，注意要先新建django-session这个表 ！！
+
                 request.session['user_id'] = admin[0].s_username
                 return HttpResponse('login success!')
             else:
