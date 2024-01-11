@@ -31,8 +31,13 @@ urlpatterns = [
     path('api/add_keyword', OSINT_DB.views.add_keyword),
     path('api/update_keyword/<int:keyword_id>', OSINT_DB.views.update_keyword),
     path('api/delete_keyword/<int:keyword_id>', OSINT_DB.views.delete_keyword),
-    path('login', views.login),
+
+    # ——————————django相关的api————————————————
+    path('authenticate/login', views.login),
     path('register', views.register),
     # path('logout', views.logout),
+
+
+    path('api/get_all_users', views.get_all_users),
 
 ]

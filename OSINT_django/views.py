@@ -1,11 +1,11 @@
+import hashlib
+import json
+
 from django.shortcuts import HttpResponse
+from rest_framework.decorators import api_view
 
 # from OSINT_django.models import User
-
-"""
-def index(request):
-    pass
-    return render(request, 'login/index.html')
+from django.contrib.auth import authenticate, login
 
 
 @api_view(['POST', ])  # 修饰器，表示这个函数只能接受post请求，下面这一坨都是网上抄的
@@ -13,22 +13,23 @@ def login(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         # user = request.data['msg'] # 获取post请求中的参数,我不知道这是干嘛的，九敏
-        name = data.get('name')
-        pwd = data.get('pwd')
-        admin = User.objects.filter(username=name)
+        username = data.get('username')
+        password = data.get('password')
+        admin = User.objects.filter(username=username)
         if len(admin) == 0:
             return HttpResponse('not have this user !!!')
         else:
             # md5加密
             h1 = hashlib.md5()
-            h1.update(pwd.encode(encoding='utf-8'))
-            if admin[0].s_pwd == h1.hexdigest():
-                request.session['user_id'] = admin[0].s_username
+            h1.update(password.encode(encoding='utf-8'))
+            if admin[0].password == h1.hexdigest():
+                request.session['user_id'] = admin[0].username
                 return HttpResponse('login success!')
             else:
                 return HttpResponse('password error!')
 
 
+"""
 @api_view(['GET', ])
 def home(request):
     if request.method == 'GET':
@@ -56,25 +57,33 @@ def register(request):
 def logout(request):
     pass
     return redirect('/index/')
-"""
 
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+
+
+
+"""
 
 
 def register(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        email = request.POST.get('email')
+        data = json.loads(request.body.decode('utf-8'))
+        username = data.get('username')
+        password = data.get('password')
+        email = data.get('email')
         if username and password and email:
-            user = User.objects.create_user(username, email, password)
+            # 计算密码的 MD5 哈希值
+            h1 = hashlib.md5()
+            h1.update(password.encode(encoding='utf-8'))
+            hashed_password = h1.hexdigest()
+            # 使用哈希密码创建用户
+            user = User.objects.create_user(username, email, hashed_password)
             user.save()
             return HttpResponse('User created successfully')
         else:
             return HttpResponse('Missing username, password or email')
 
 
+"""
 def login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -88,3 +97,13 @@ def login(request):
                 return HttpResponse('Invalid credentials')
         else:
             return HttpResponse('Missing username or password')
+"""
+
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+
+
+def get_all_users(request):
+    users = User.objects.all()
+    user_list = list(users.values('username', 'email'))
+    return JsonResponse(user_list, safe=False)
