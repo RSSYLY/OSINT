@@ -1,6 +1,8 @@
 import hashlib
 import json
 
+from django.contrib.auth.models import User
+from django.http import JsonResponse
 from django.shortcuts import HttpResponse
 from rest_framework.decorators import api_view
 
@@ -62,6 +64,7 @@ def logout(request):
 """
 
 
+@api_view(['POST', ])
 def register(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
@@ -69,38 +72,21 @@ def register(request):
         password = data.get('password')
         email = data.get('email')
         if username and password and email:
-            # 计算密码的 MD5 哈希值
+            # 检查用户名是否已经存在
+            if User.objects.filter(username=username).exists():
+                return HttpResponse('Username already exists')
             h1 = hashlib.md5()
             h1.update(password.encode(encoding='utf-8'))
             hashed_password = h1.hexdigest()
-            # 使用哈希密码创建用户
-            user = User.objects.create_user(username, email, hashed_password)
+            # 直接保存哈希密码
+            user = User.objects.create(username=username, password=hashed_password, email=email)
             user.save()
             return HttpResponse('User created successfully')
         else:
             return HttpResponse('Missing username, password or email')
 
 
-"""
-def login(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        if username and password:
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return HttpResponse('User logged in')
-            else:
-                return HttpResponse('Invalid credentials')
-        else:
-            return HttpResponse('Missing username or password')
-"""
-
-from django.contrib.auth.models import User
-from django.http import JsonResponse
-
-
+@api_view(['GET', ])
 def get_all_users(request):
     users = User.objects.all()
     user_list = list(users.values('username', 'email'))
