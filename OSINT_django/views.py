@@ -4,29 +4,27 @@ import json
 from django.shortcuts import HttpResponse
 from rest_framework.decorators import api_view
 
+
 # from OSINT_django.models import User
-from django.contrib.auth import authenticate, login
 
 
-@api_view(['POST', ])  # 修饰器，表示这个函数只能接受post请求，下面这一坨都是网上抄的
+@api_view(['POST', ])
 def login(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        # user = request.data['msg'] # 获取post请求中的参数,我不知道这是干嘛的，九敏
         username = data.get('username')
         password = data.get('password')
-        admin = User.objects.filter(username=username)
-        if len(admin) == 0:
-            return HttpResponse('not have this user !!!')
+        users = User.objects.filter(username=username)
+        if len(users) == 0:
+            return HttpResponse('User does not exist')
         else:
-            # md5加密
             h1 = hashlib.md5()
             h1.update(password.encode(encoding='utf-8'))
-            if admin[0].password == h1.hexdigest():
-                request.session['user_id'] = admin[0].username
-                return HttpResponse('login success!')
+            if users[0].password == h1.hexdigest():
+                request.session['user_id'] = users[0].username
+                return HttpResponse('Login successful')
             else:
-                return HttpResponse('password error!')
+                return HttpResponse('Password error')
 
 
 """

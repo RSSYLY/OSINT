@@ -33,8 +33,8 @@ urlpatterns = [
     path('api/delete_keyword/<int:keyword_id>', OSINT_DB.views.delete_keyword),
 
     # ——————————django相关的api————————————————
-    path('authenticate/login', views.login),
-    path('register', views.register),
+    path('authenticate/login/', views.login),
+    path('register/', views.register),
     # path('logout', views.logout),
 
 
