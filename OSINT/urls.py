@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 import OSINT_DB.views
 from OSINT_django import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/get_all_objects', OSINT_DB.views.get_all_objects),
@@ -35,9 +36,9 @@ urlpatterns = [
     # ——————————django相关的api————————————————
     path('authenticate/login/', views.login),
     path('register/', views.register),
-    # path('logout', views.logout),
-
-
+    path('logout/', views.logout),
+    path('index/', views.index),
     path('api/get_all_users', views.get_all_users),
+    path('api/home/', views.home),
 
 ]

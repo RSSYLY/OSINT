@@ -3,69 +3,91 @@ import json
 
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, redirect
 from rest_framework.decorators import api_view
+
+from Utils.Code import *
 
 
 # from OSINT_django.models import User
 
-
+# 登录
 @api_view(['POST', ])
 def login(request):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Login successful"
+    }
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         username = data.get('username')
         password = data.get('password')
         users = User.objects.filter(username=username)
-        if len(users) == 0:
-            return HttpResponse('User does not exist')
+        if len(users) == 0:  # 懒得改try了，就这样吧
+            ret_data["code"] = ITEM_NOT_FOUND_CODE
+            ret_data["msg"] = "User not found"
+            return HttpResponse(json.dumps(ret_data), content_type="application/json")
         else:
             h1 = hashlib.md5()
             h1.update(password.encode(encoding='utf-8'))
             if users[0].password == h1.hexdigest():
-                request.session['user_id'] = users[0].username
-                return HttpResponse('Login successful')
+                request.session['user_id'] = users[0].username  # 保存用户id到session，但介个功能不知道咋用，九敏
+                return HttpResponse(json.dumps(ret_data), content_type="application/json")
             else:
-                return HttpResponse('Password error')
+                ret_data["code"] = FAIL_CODE
+                ret_data["msg"] = "Password error"
+                return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
 
-"""
+# 检查用户是否已经登录
 @api_view(['GET', ])
 def home(request):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "login success"
+    }
     if request.method == 'GET':
         try:
             print(request.COOKIES['sessionid'])
             print(request.session['user_id'])
         except Exception as e:
             print(e)
-            return HttpResponse('login error !')
-        return HttpResponse('login success !')
+            ret_data["code"] = FAIL_CODE
+            ret_data["msg"] = "login error"
+        return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
 
 # 登出功能，清除session
 @api_view(['GET', ])
-def login_out(request):
-    request.session.flush()
-    return HttpResponse('login out !')
-
-
-def register(request):
-    pass
-    return render(request, 'login/register.html')
-
-
 def logout(request):
-    pass
-    return redirect('/index/')
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "logout success"
+    }
+    if request.method == 'GET':
+        try:
+            request.session.flush()
+        except Exception as e:
+            print(e)
+            ret_data["code"] = FAIL_CODE
+            ret_data["msg"] = "logout error"
+        response = JsonResponse(ret_data)
+        response['Location'] = '/index/'
+        return response
 
 
+# 首页
+def index(request):
+    return HttpResponse('/index/')  # 这函数的顺序过于混乱了，不好评价，然后这个函数我也不知道是干嘛的，但是写了就不会报错，这下不得不加上了
 
 
-"""
-
-
+# 注册
 @api_view(['POST', ])
 def register(request):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Register successful"
+    }
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         username = data.get('username')
@@ -74,18 +96,22 @@ def register(request):
         if username and password and email:
             # 检查用户名是否已经存在
             if User.objects.filter(username=username).exists():
-                return HttpResponse('Username already exists')
-            h1 = hashlib.md5()
-            h1.update(password.encode(encoding='utf-8'))
-            hashed_password = h1.hexdigest()
-            # 直接保存哈希密码
-            user = User.objects.create(username=username, password=hashed_password, email=email)
-            user.save()
-            return HttpResponse('User created successfully')
+                ret_data["code"] = FAIL_CODE
+                ret_data["msg"] = "Username already exists"
+            else:  # 成功，保存用户信息
+                h1 = hashlib.md5()
+                h1.update(password.encode(encoding='utf-8'))
+                hashed_password = h1.hexdigest()
+                # 直接保存哈希密码
+                user = User.objects.create(username=username, password=hashed_password, email=email)
+                user.save()
         else:
-            return HttpResponse('Missing username, password or email')
+            ret_data["code"] = FAIL_CODE
+            ret_data["msg"] = "Missing username, password or email"
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
 
+# 获取所有用户
 @api_view(['GET', ])
 def get_all_users(request):
     users = User.objects.all()
