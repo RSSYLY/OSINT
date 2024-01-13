@@ -7,12 +7,19 @@ from django.shortcuts import HttpResponse, redirect
 from rest_framework.decorators import api_view
 
 from Utils.Code import *
-
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 # from OSINT_django.models import User
+'''
+--------------------------------- 用户登录 ---------------------------------
+'''
+
 
 # 登录
-@api_view(['POST', ])
+@api_view(['POST'])
 def login(request):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -31,7 +38,9 @@ def login(request):
             h1 = hashlib.md5()
             h1.update(password.encode(encoding='utf-8'))
             if users[0].password == h1.hexdigest():
-                request.session['user_id'] = users[0].username  # 保存用户id到session，但介个功能不知道咋用，九敏
+                # 登录成功
+                # 将用户id保存到session中，键为user_id，注意该数据存在服务器端
+                request.session['user_id'] = users[0].id
                 return HttpResponse(json.dumps(ret_data), content_type="application/json")
             else:
                 ret_data["code"] = FAIL_CODE
@@ -81,6 +90,11 @@ def index(request):
     return HttpResponse('/index/')  # 这函数的顺序过于混乱了，不好评价，然后这个函数我也不知道是干嘛的，但是写了就不会报错，这下不得不加上了
 
 
+'''
+--------------------------------- 用户注册 ---------------------------------
+'''
+
+
 # 注册
 @api_view(['POST', ])
 def register(request):
@@ -109,6 +123,18 @@ def register(request):
             ret_data["code"] = FAIL_CODE
             ret_data["msg"] = "Missing username, password or email"
     return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+# 在用户注册后，为用户创建token
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
+
+'''
+--------------------------------- 其他 ---------------------------------
+'''
 
 
 # 获取所有用户
