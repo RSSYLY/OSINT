@@ -1,4 +1,4 @@
-# Used for: 定义HTTP状态码
+# 定义HTTP状态码
 # 规范来自 https://pythondjango.cn/django/rest-framework/1-RESTfull-API-why-DRF/
 # 成功代码
 SUCCESS_CODE = 200  # 服务器成功返回用户请求的数据，该操作是幂等的（Idempotent）

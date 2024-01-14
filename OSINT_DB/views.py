@@ -6,6 +6,21 @@ import json
 
 # ----------------------------- Events CRUD -----------------------------
 # 获取所有Events
+def get_all_objects(request):
+    ret_data = {
+        "objects": [],
+        "code": SUCCESS_CODE,
+        "msg": ""
+    }
+    try:
+        objects = OSINT_DB.models.Objects.objects.all()
+        ret_data["objects"] = [{"id": e.id, "name": e.name, "role": e.role, "gender": e.gender} for e in objects]
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+    # Similar to get_all_events, retrieve all Objects entries and return them.
+
 def get_all_events(request):
     ret_data = {
         "events": [],
@@ -14,7 +29,7 @@ def get_all_events(request):
     }
     try:
         events = OSINT_DB.models.Events.objects.all()
-        ret_data["events"] = [{"id": e.id, "name": e.name, "date": e.date, "score": e.score} for e in events]
+        ret_data["events"] = [{"id": e.id, "name": e.name, "date": e.date.strftime('%Y-%m-%d'), "score": e.score} for e in events]
     except Exception as e:
         ret_data["code"] = SERVER_FAIL_CODE
         ret_data["msg"] = str(e)
