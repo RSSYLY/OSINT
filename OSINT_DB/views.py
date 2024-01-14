@@ -1,4 +1,8 @@
 from django.shortcuts import render, HttpResponse
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
 import OSINT_DB.models
 from Utils.Code import *
 import json
@@ -6,21 +10,7 @@ import json
 
 # ----------------------------- Events CRUD -----------------------------
 # 获取所有Events
-def get_all_objects(request):
-    ret_data = {
-        "objects": [],
-        "code": SUCCESS_CODE,
-        "msg": ""
-    }
-    try:
-        objects = OSINT_DB.models.Objects.objects.all()
-        ret_data["objects"] = [{"id": e.id, "name": e.name, "role": e.role, "gender": e.gender} for e in objects]
-    except Exception as e:
-        ret_data["code"] = SERVER_FAIL_CODE
-        ret_data["msg"] = str(e)
-    return HttpResponse(json.dumps(ret_data), content_type="application/json")
-    # Similar to get_all_events, retrieve all Objects entries and return them.
-
+@api_view(['GET'])
 def get_all_events(request):
     ret_data = {
         "events": [],
@@ -37,6 +27,8 @@ def get_all_events(request):
 
 
 # 添加新Event
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
 def add_event(request):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -56,6 +48,8 @@ def add_event(request):
 
 
 # 更新Event
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
 def update_event(request, event_id):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -78,6 +72,8 @@ def update_event(request, event_id):
 
 
 # 删除Event
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
 def delete_event(request, event_id):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -97,6 +93,7 @@ def delete_event(request, event_id):
 
 # ----------------------------- Objects CRUD -----------------------------
 # 获取所有Objects
+@api_view(['GET'])
 def get_all_objects(request):
     ret_data = {
         "objects": [],
@@ -114,6 +111,8 @@ def get_all_objects(request):
 
 
 # 添加新Object
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
 def add_object(request):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -133,6 +132,8 @@ def add_object(request):
 
 
 # 更新Object
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
 def update_object(request, object_id):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -155,6 +156,8 @@ def update_object(request, object_id):
 
 
 # 删除Object
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
 def delete_object(request, object_id):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -174,6 +177,7 @@ def delete_object(request, object_id):
 
 # ----------------------------- Keywords CRUD -----------------------------
 # 获取所有Keywords
+@api_view(['GET'])
 def get_all_keywords(request):
     ret_data = {
         "keywords": [],
@@ -190,6 +194,8 @@ def get_all_keywords(request):
 
 
 # 添加新Keyword
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
 def add_keyword(request):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -207,6 +213,8 @@ def add_keyword(request):
 
 
 # 更新Keyword
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
 def update_keyword(request, keyword_id):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -227,6 +235,8 @@ def update_keyword(request, keyword_id):
 
 
 # 删除Keyword
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
 def delete_keyword(request, keyword_id):
     ret_data = {
         "code": SUCCESS_CODE,

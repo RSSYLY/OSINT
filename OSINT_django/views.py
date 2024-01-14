@@ -150,6 +150,7 @@ def register(request):
 
 # 在用户注册后，为用户创建token
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+@permission_classes((AllowAny, ))
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)

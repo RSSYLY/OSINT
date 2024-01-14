@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+import OSINT_django.views
 import OSINT_DB.views
-from OSINT_django import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -34,11 +34,11 @@ urlpatterns = [
     path('api/delete_keyword/<int:keyword_id>', OSINT_DB.views.delete_keyword),
 
     # ——————————django相关的api————————————————
-    path('authenticate/login/', views.login),
-    path('register/', views.register),
+    path('authenticate/login/', OSINT_django.views.login),
+    path('register/', OSINT_django.views.register),
     # path('logout/', views.logout),
     # path('index/', views.index),
-    path('api/get_all_users', views.get_all_users),
+    path('api/get_all_users', OSINT_django.views.get_all_users),
     # path('api/home/', views.home),
 
 ]
