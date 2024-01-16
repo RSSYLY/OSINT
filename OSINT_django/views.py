@@ -31,9 +31,17 @@ def login(request):
     try:
         if request.method == 'POST':
             data = json.loads(request.body.decode('utf-8'))
-            username = data.get('username')
+            login_type = data.get('type')
+            username_or_email = data.get('username_or_email')
             password = data.get('password')
-            users = User.objects.filter(username=username)
+            if login_type == 'username':
+                users = User.objects.filter(username=username_or_email)
+            elif login_type == 'email':
+                users = User.objects.filter(email=username_or_email)
+            else:
+                ret_data["code"] = FAIL_CODE
+                ret_data["msg"] = "Invalid login type"
+                return HttpResponse(json.dumps(ret_data), content_type="application/json")
             if len(users) == 0:
                 ret_data["code"] = ITEM_NOT_FOUND_CODE
                 ret_data["msg"] = "User not found"
