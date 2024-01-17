@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'OSINT_DB',
     'OSINT_django',
-    # 'corsheaders',  # 跨域请求
+    'corsheaders',  # 跨域请求
     'rest_framework.authtoken',  # DRF的token认证
 
 ]
@@ -47,7 +47,8 @@ MIDDLEWARE = [
     # 启用session中间层
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.security.SecurityMiddleware',  # 跨域请求中间件
+    'django.middleware.security.SecurityMiddleware',  # 跨域请求中间件
+    'corsheaders.middleware.CorsMiddleware',  # 跨域请求中间件
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -65,14 +66,13 @@ REST_FRAMEWORK = {
     ),
 }
 
-# # 跨域白名单
-# CORS_ALLOW_CREDENTIALS = True
-# CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ORIGIN_WHITELIST = (
-#     'http://localhost:8000',
-#     'http://localhost:5173'
-# )
-#
+# 跨域白名单
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:8000',
+    'http://localhost:5173'
+)
+
 # CORS_ALLOW_METHODS = (
 #     'DELETE',
 #     'GET',
@@ -82,7 +82,7 @@ REST_FRAMEWORK = {
 #     'PUT',
 #     'VIEW',
 # )
-
+#
 # CORS_ALLOW_HEADERS = (
 #     'XMLHttpRequest',
 #     'X_FILENAME',
