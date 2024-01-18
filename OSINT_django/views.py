@@ -25,7 +25,7 @@ from rest_framework.authtoken.models import Token
 
 # 登录，是否有token认证都可访问
 @api_view(['POST'])
-@permission_classes((AllowAny, ))
+@permission_classes((AllowAny,))
 def login(request):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -80,13 +80,15 @@ def login(request):
         ret_data["msg"] = str(e)
         return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
+
 '''
 --------------------------------- 用户注册 ---------------------------------
 '''
 
+
 # 注册验证码
 @api_view(['POST', ])
-@permission_classes((AllowAny, ))
+@permission_classes((AllowAny,))
 def register_sendcode(request):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -106,7 +108,7 @@ def register_sendcode(request):
                 # 发送邮件
                 print("验证码为：" + code)
                 # 将验证码存储在缓存中，设置过期时间为5分钟
-                cache.set('res_ver'+email, code, 60 * 5)
+                cache.set('res_ver' + email, code, 60 * 5)
         else:
             ret_data["code"] = FAIL_CODE
             ret_data["msg"] = "Missing email"
@@ -116,9 +118,10 @@ def register_sendcode(request):
         ret_data["msg"] = str(e)
         return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
+
 # 注册
 @api_view(['POST', ])
-@permission_classes((AllowAny, ))
+@permission_classes((AllowAny,))
 def register(request):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -132,10 +135,14 @@ def register(request):
             email = data.get('email')
             verification_code = data.get('verification_code')
             if username and password and email and verification_code:
-                if verification_code != cache.get("res_ver"+email):  # 验证码错误
+                if verification_code != cache.get("res_ver" + email):  # 验证码错误
                     ret_data["code"] = FAIL_CODE
-                    print(verification_code, cache.get("res_ver"+email))
+                    print(verification_code, cache.get("res_ver" + email))
                     ret_data["msg"] = "Verification code does not match"
+
+                elif User.objects.filter(username=username).exists():  # 用户名已存在
+                    ret_data["code"] = FAIL_CODE
+                    ret_data["msg"] = "Username already exists"
                 else:  # 成功，保存用户信息
                     h1 = hashlib.md5()
                     h1.update(password.encode(encoding='utf-8'))
@@ -155,20 +162,19 @@ def register(request):
 
 # 在用户注册后，为用户创建token
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-@permission_classes((AllowAny, ))
+@permission_classes((AllowAny,))
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
-
-
 
 
 '''
 --------------------------------- 找回密码 ---------------------------------
 '''
 
+
 @api_view(['POST', ])
-@permission_classes((AllowAny, ))
+@permission_classes((AllowAny,))
 def find_password_sendcode(request):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -188,7 +194,7 @@ def find_password_sendcode(request):
                 # 发送邮件
                 print("验证码为：" + code)
                 # 将验证码存储在缓存中，设置过期时间为5分钟
-                cache.set('find_pass_ver'+email, code, 60 * 5)
+                cache.set('find_pass_ver' + email, code, 60 * 5)
         else:
             ret_data["code"] = FAIL_CODE
             ret_data["msg"] = "Missing email"
@@ -200,7 +206,7 @@ def find_password_sendcode(request):
 
 
 @api_view(['POST', ])
-@permission_classes((AllowAny, ))
+@permission_classes((AllowAny,))
 def find_password(request):
     ret_data = {
         "code": SUCCESS_CODE,
@@ -213,9 +219,9 @@ def find_password(request):
             password = data.get('password')
             verification_code = data.get('verification_code')
             if email and password and verification_code:
-                if verification_code != cache.get("find_pass_ver"+email):  # 验证码错误
+                if verification_code != cache.get("find_pass_ver" + email):  # 验证码错误
                     ret_data["code"] = FAIL_CODE
-                    print(verification_code, cache.get("find_pass_ver"+email))
+                    print(verification_code, cache.get("find_pass_ver" + email))
                     ret_data["msg"] = "Verification code does not match"
                 else:  # 成功，保存用户信息
                     h1 = hashlib.md5()
@@ -233,6 +239,7 @@ def find_password(request):
         ret_data["code"] = SERVER_FAIL_CODE
         ret_data["msg"] = str(e)
         return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
 
 '''
 --------------------------------- 其他 ---------------------------------
