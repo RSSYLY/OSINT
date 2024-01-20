@@ -1,11 +1,11 @@
-from django.shortcuts import render, HttpResponse
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+import json
+
+from django.shortcuts import HttpResponse
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAdminUser
 
 import OSINT_DB.models
 from Utils.Code import *
-import json
 
 
 # ----------------------------- Events CRUD -----------------------------
@@ -19,7 +19,8 @@ def get_all_events(request):
     }
     try:
         events = OSINT_DB.models.Events.objects.all()
-        ret_data["events"] = [{"id": e.id, "name": e.name, "date": e.date.strftime('%Y-%m-%d'), "score": e.score} for e in events]
+        ret_data["events"] = [{"id": e.id, "name": e.name, "date": e.date.strftime('%Y-%m-%d'), "score": e.score} for e
+                              in events]
     except Exception as e:
         ret_data["code"] = SERVER_FAIL_CODE
         ret_data["msg"] = str(e)
@@ -91,6 +92,50 @@ def delete_event(request, event_id):
     return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
 
+# ——————————查询事件
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def check_event(request):
+    # 默认返回内容
+    ret_data = {
+        'code': SUCCESS_CODE,
+        'msg': 'Event checked successfully!',
+    }
+    # 判断入参是否为空
+    if request.args is None:
+        ret_data['ode'] = '504'
+        ret_data['msg'] = '请求参数为空'
+        return HttpResponse(json.dumps(ret_data), content_type="application/json")
+    data = json.loads(request.body.decode('utf-8'))
+
+    dbname = data.get('dbname')
+    tbname = data.get('tbname')
+    condition = data.get('condition')
+    value = data.get('value')
+    ret_data['result'] = sql_result(dbname, tbname, condition, value)
+
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+def sql_result(dbname, tbname, condition, value):
+    # ：dbname（数据库名）、tbname（表名）、condition（查询条件）和value（查询值）
+    conn = OSINT_DB.models.Events.objects.connect(dbname)
+    try:
+        print("数据库连接成功")
+        cursor = conn.cursor()
+        sql = 'SELECT * FROM {} where {}=?'.format(tbname, condition)
+        cursor.execute(sql, (value,))
+
+        results = cursor.fetchall()
+        for data in results:
+            print(data)
+    except:
+        print("查询失败")
+    finally:
+        conn.close()
+    return results
+
+
 # ----------------------------- Objects CRUD -----------------------------
 # 获取所有Objects
 @api_view(['GET'])
@@ -143,7 +188,7 @@ def update_object(request, object_id):
         data = json.loads(request.body.decode('utf-8'))
         obj = OSINT_DB.models.Objects.objects.get(id=object_id)
         obj.name = data.get('name', obj.name)
-        obj.role = data .get('role', obj.role)
+        obj.role = data.get('role', obj.role)
         obj.gender = data.get('gender', obj.gender)
         obj.save()
     except OSINT_DB.models.Objects.DoesNotExist:
