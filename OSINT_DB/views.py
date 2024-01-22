@@ -100,6 +100,7 @@ def check_event(request):
     ret_data = {
         'code': SUCCESS_CODE,
         'msg': 'Event checked successfully!',
+        'result': [],
     }
     # 判断入参是否为空
     if request.args is None:
@@ -107,13 +108,12 @@ def check_event(request):
         ret_data['msg'] = '请求参数为空'
         return HttpResponse(json.dumps(ret_data), content_type="application/json")
     data = json.loads(request.body.decode('utf-8'))
-
     dbname = data.get('dbname')
     tbname = data.get('tbname')
     condition = data.get('condition')
     value = data.get('value')
-    ret_data['result'] = sql_result(dbname, tbname, condition, value)
-
+    result = sql_result(dbname, tbname, condition, value)
+    ret_data['result'] = [{"dbname": e.dbname, "tbname": e.tbname, "date": e.condition, "value": e.value} for e in result]
     return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
 

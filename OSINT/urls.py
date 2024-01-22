@@ -13,10 +13,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import path
-import OSINT_django.views
+
 import OSINT_DB.views
+import OSINT_django.views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/add_keyword', OSINT_DB.views.add_keyword),
     path('api/update_keyword/<int:keyword_id>', OSINT_DB.views.update_keyword),
     path('api/delete_keyword/<int:keyword_id>', OSINT_DB.views.delete_keyword),
+    path('api/check_event', OSINT_DB.views.check_event),
 
     # ——————————django相关的api————————————————
     path('api/login/', OSINT_django.views.login),
