@@ -93,6 +93,7 @@ def delete_event(request, event_id):
 
 
 # ——————————查询事件
+# TODO 事件分析，包括事件的关键词、事件的参与者、事件的时间、事件的地点、事件的影响力等，等待前端对接
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def check_event(request):
