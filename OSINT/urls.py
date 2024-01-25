@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/register/sendcode/', OSINT_django.views.register_sendcode),
     path('api/find-password/sendcode/', OSINT_django.views.find_password_sendcode),
     path('api/find-password/', OSINT_django.views.find_password),
+    path('api/change-password/', OSINT_django.views.change_password),
     # path('logout/', views.logout),
     # path('index/', views.index),
     path('api/get_all_users', OSINT_django.views.get_all_users),

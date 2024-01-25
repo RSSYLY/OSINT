@@ -240,6 +240,46 @@ def find_password(request):
         ret_data["msg"] = str(e)
         return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
+'''
+--------------------------------- 修改密码 ---------------------------------
+'''
+@api_view(['POST', ])
+@permission_classes((IsAuthenticated,))
+def change_password(request):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Password reset successful"
+    }
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body.decode('utf-8'))
+            old_password = data.get('old_password')
+            new_password = data.get('new_password')
+            if old_password and new_password:
+                h1 = hashlib.md5()
+                h1.update(old_password.encode(encoding='utf-8'))
+                hashed_old_password = h1.hexdigest()
+                if hashed_old_password != request.user.password:  # 旧密码错误
+                    ret_data["code"] = FAIL_CODE
+                    ret_data["msg"] = "Old password error"
+                else:  # 成功，保存用户信息
+                    h2 = hashlib.md5()
+                    h2.update(new_password.encode(encoding='utf-8'))
+                    hashed_new_password = h2.hexdigest()
+                    # 直接保存哈希密码
+                    user = User.objects.get(username=request.user.username)
+                    user.password = hashed_new_password
+                    user.save()
+            else:
+                ret_data["code"] = FAIL_CODE
+                ret_data["msg"] = "Missing old password or new password"
+        return HttpResponse(json.dumps(ret_data), content_type="application/json")
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+        return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
 
 '''
 --------------------------------- 其他 ---------------------------------
