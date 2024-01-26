@@ -280,6 +280,46 @@ def change_password(request):
         return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
 
+'''
+--------------------------------- 管理员权限（未完成） ---------------------------------
+'''
+# 权限变更-管理员
+@api_view(['POST', ])
+@permission_classes((IsAuthenticated,))
+def change_permission(request):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Permission change successful"
+    }
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body.decode('utf-8'))
+            username = data.get('username')
+            is_superuser = data.get('is_superuser')
+            is_staff = data.get('is_staff')
+            is_active = data.get('is_active')
+            if username:
+                user = User.objects.get(username=username)
+                if is_superuser:
+                    user.is_superuser = is_superuser
+                if is_staff:
+                    user.is_staff = is_staff
+                if is_active:
+                    user.is_active = is_active
+                user.save()
+            else:
+                ret_data["code"] = FAIL_CODE
+                ret_data["msg"] = "Missing username"
+        return HttpResponse(json.dumps(ret_data), content_type="application/json")
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+        return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+
+
+
 
 '''
 --------------------------------- 其他 ---------------------------------
@@ -288,6 +328,7 @@ def change_password(request):
 
 # 获取所有用户，仅登录下可请求
 @api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
 def get_all_users(request):
     users = User.objects.all()
     user_list = list(users.values('username', 'email'))
