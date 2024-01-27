@@ -325,7 +325,9 @@ def change_permission(request):
 --------------------------------- 其他 ---------------------------------
 '''
 
-
+'''
+用户管理相关api
+'''
 # 获取所有用户，仅登录下可请求
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated,))
@@ -333,3 +335,30 @@ def get_all_users(request):
     users = User.objects.all()
     user_list = list(users.values('username', 'email'))
     return JsonResponse(user_list, safe=False)
+
+
+
+# 用户，管理员，活跃用户数量统计
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
+def user_stats(request):
+    total_users = User.objects.count()
+    active_users = User.objects.filter(is_active=True).count()
+    admin_users = User.objects.filter(is_superuser=True).count()
+
+    data = {
+        'total_users': total_users,
+        'active_users': active_users,
+        'admin_users': admin_users,
+    }
+
+    return JsonResponse(data)
+
+# 获取所有用户信息
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
+def get_all_users_info(request):
+    users = User.objects.all()
+    users_info = list(users.values('username', 'email', 'is_active', 'is_superuser', 'date_joined', 'last_login'))
+
+    return JsonResponse(users_info, safe=False)
