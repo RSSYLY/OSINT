@@ -3,19 +3,18 @@ import json
 import random
 import string
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.http import JsonResponse
-from django.shortcuts import HttpResponse, redirect
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from django.shortcuts import HttpResponse
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from Utils.Code import *
-from django.conf import settings
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
 
 # from OSINT_django.models import User
 
@@ -244,12 +243,15 @@ def find_password(request):
         ret_data["msg"] = str(e)
         return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
+
 '''
 --------------------------------------------------------------------------
 用户配置相关api
 --------------------------------------------------------------------------
 --------------------------------- 修改密码 ---------------------------------
 '''
+
+
 @api_view(['POST', ])
 @permission_classes((IsAuthenticated,))
 def change_password(request):
@@ -290,6 +292,8 @@ def change_password(request):
 '''
 --------------------------------- 管理员权限（未完成） ---------------------------------
 '''
+
+
 # 权限变更-管理员
 @api_view(['POST', ])
 @permission_classes((IsAuthenticated,))
@@ -324,10 +328,6 @@ def change_permission(request):
         return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
 
-
-
-
-
 '''
 --------------------------------- 其他 ---------------------------------
 '''
@@ -335,6 +335,8 @@ def change_permission(request):
 '''
 用户管理相关api
 '''
+
+
 # 获取所有用户，仅登录下可请求
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated,))
@@ -342,7 +344,6 @@ def get_all_users(request):
     users = User.objects.all()
     user_list = list(users.values('username', 'email'))
     return JsonResponse(user_list, safe=False)
-
 
 
 # 用户，管理员，活跃用户数量统计
@@ -361,11 +362,22 @@ def user_stats(request):
 
     return JsonResponse(data)
 
+
+
+
 # 获取所有用户信息
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated,))
 def get_all_users_info(request):
-    users = User.objects.all()
-    users_info = list(users.values('username', 'email', 'is_active', 'is_superuser', 'date_joined', 'last_login'))
-
-    return JsonResponse(users_info, safe=False)
+    ret_data = {
+        "events": [],
+        "code": SUCCESS_CODE,
+        "msg": ""
+    }
+    try:
+        users = User.objects.all()
+        ret_data["events"] = [{"id": e.id, "username": e.username, "email": e.email, } for e in users]
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
