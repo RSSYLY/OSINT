@@ -42,7 +42,7 @@ urlpatterns = [
     path('api/find-password/sendcode/', OSINT_django.views.find_password_sendcode),
     path('api/find-password/', OSINT_django.views.find_password),
     path('api/change-password/', OSINT_django.views.change_password),
-    path('api/change_permission/', OSINT_django.views.change_permission),
+
     # path('logout/', views.logout),
     # path('index/', views.index),
     # path('api/get_all_users', OSINT_django.views.get_all_users),
@@ -51,5 +51,5 @@ urlpatterns = [
     # ——————————用户管理相关的api——————————————
     path('api/user_stats/', OSINT_django.views.user_stats),
     path('api/get_all_users_info/', OSINT_django.views.get_all_users_info),
-
+    path('api/change_permission/', OSINT_django.views.change_permission),
 ]

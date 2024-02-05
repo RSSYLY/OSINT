@@ -363,8 +363,6 @@ def user_stats(request):
     return JsonResponse(data)
 
 
-
-
 # 获取所有用户信息
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated,))
