@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/add_object', OSINT_DB.views.add_object),
     path('api/update_object/<int:object_id>', OSINT_DB.views.update_object),
     path('api/delete_object/<int:object_id>', OSINT_DB.views.delete_object),
+    path('api/get_object_by_keyword', OSINT_DB.views.get_object_by_keyword),
     path('api/get_all_keywords', OSINT_DB.views.get_all_keywords),
     path('api/add_keyword', OSINT_DB.views.add_keyword),
     path('api/update_keyword/<int:keyword_id>', OSINT_DB.views.update_keyword),

@@ -220,6 +220,25 @@ def delete_object(request, object_id):
         ret_data["msg"] = str(e)
     return HttpResponse(json.dumps(ret_data), content_type="application/json")
 
+# 通过name模糊搜索对象
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def get_object_by_keyword(request):
+    ret_data = {
+        "objects": [],
+        "code": SUCCESS_CODE,
+        "msg": ""
+    }
+    try:
+        name = request.query_params.get('keyword')
+        objects = OSINT_DB.models.Objects.objects.filter(name__contains=name)
+        ret_data["objects"] = [{"id": e.id, "name": e.name, "role": e.role, "gender": e.gender} for e in objects]
+
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+    return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
 
 # ----------------------------- Keywords CRUD -----------------------------
 # 获取所有Keywords
