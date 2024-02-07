@@ -10,6 +10,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import JsonResponse
 from django.shortcuts import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -366,6 +367,7 @@ def user_stats(request):
 # 获取所有用户信息
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated,))
+@csrf_exempt
 def get_all_users_info(request):
     ret_data = {
         "events": [],
@@ -374,7 +376,8 @@ def get_all_users_info(request):
     }
     try:
         users = User.objects.all()
-        ret_data["events"] = [{"id": e.id, "username": e.username, "email": e.email, } for e in users]
+        ret_data["events"] = [{"id": e.id, "username": e.username, "email": e.email, "is_superuser": e.is_superuser,
+                               "is_staff": e.is_staff} for e in users]
     except Exception as e:
         ret_data["code"] = SERVER_FAIL_CODE
         ret_data["msg"] = str(e)
