@@ -347,23 +347,6 @@ def get_all_users(request):
     return JsonResponse(user_list, safe=False)
 
 
-# 用户，管理员，活跃用户数量统计
-@api_view(['GET', ])
-@permission_classes((IsAuthenticated,))
-def user_stats(request):
-    total_users = User.objects.count()
-    active_users = User.objects.filter(is_active=True).count()
-    admin_users = User.objects.filter(is_superuser=True).count()
-
-    data = {
-        'total_users': total_users,
-        'active_users': active_users,
-        'admin_users': admin_users,
-    }
-
-    return JsonResponse(data)
-
-
 # 获取所有用户信息
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated,))
@@ -382,3 +365,29 @@ def get_all_users_info(request):
         ret_data["code"] = SERVER_FAIL_CODE
         ret_data["msg"] = str(e)
     return HttpResponse(json.dumps(ret_data), content_type="application/json")
+
+
+
+# 删除用户
+@api_view(['POST', ])
+@permission_classes((IsAuthenticated,))
+def delete_user(request):
+    ret_data = {
+        "code": SUCCESS_CODE,
+        "msg": "Delete user successful"
+    }
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body.decode('utf-8'))
+            username = data.get('username')
+            if username:
+                user = User.objects.get(username=username)
+                user.delete()
+            else:
+                ret_data["code"] = FAIL_CODE
+                ret_data["msg"] = "Missing username"
+        return HttpResponse(json.dumps(ret_data), content_type="application/json")
+    except Exception as e:
+        ret_data["code"] = SERVER_FAIL_CODE
+        ret_data["msg"] = str(e)
+        return HttpResponse(json.dumps(ret_data), content_type="application/json")

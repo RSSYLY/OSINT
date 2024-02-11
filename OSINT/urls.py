@@ -49,7 +49,7 @@ urlpatterns = [
     # path('api/home/', views.home),
 
     # ——————————用户管理相关的api——————————————
-    path('api/user_stats/', OSINT_django.views.user_stats),
     path('api/get_all_users_info/', OSINT_django.views.get_all_users_info),
     path('api/change_permission/', OSINT_django.views.change_permission),
+    path('api/delete_user/', OSINT_django.views.delete_user),
 ]
